@@ -1,0 +1,154 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Net;
+using System.Net.Sockets;
+using System.Windows;
+using Timer = System.Timers.Timer;
+using System.Threading;
+using System.Diagnostics;
+
+namespace CoMaster
+{
+    internal class Pinger : IDisposable
+    {
+        public event EventHandler<double> ReplyReceived;
+        public event EventHandler PacketTimedOut;
+        public int TimeoutDuration { get; set; }
+        public EndPoint Destination { get; set; }
+        public bool HasTimerElapsed { get; set; }
+
+        private Socket PingSocket { get; set; }
+        private ICMPEchoPacket EchoPacket { get; set; }
+        private EndPoint Host { get; set; }
+
+        public Pinger(string dest, int timeout)
+        {
+            TimeoutDuration = timeout;
+            EchoPacket = new ICMPEchoPacket();
+            Destination = GetFirstIP(dest);
+            PingSocket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.Icmp)
+            {
+                SendTimeout = TimeoutDuration,
+                ReceiveTimeout = TimeoutDuration
+            };
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AsyncArgs_Completed(object sender, SocketAsyncEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendSingle(string msg)
+        {
+            byte[] msgBytes = Encoding.UTF8.GetBytes(msg);
+            PreparePacket(msgBytes);
+            int ret = 0;
+            Stopwatch sw = null;
+            try
+            {
+                ret = PingSocket.SendTo(EchoPacket.Buffer, Destination);
+                sw = Stopwatch.StartNew();
+            }
+            catch (SocketException se)
+            {
+                if (se.SocketErrorCode != SocketError.WouldBlock)
+                {
+                    // This is not EAGAIN, throw
+                    throw;
+                }
+            }
+            if (ret > 0)
+            {
+                EndPoint sender = Destination;
+                byte[] rcvBuf = new byte[65507];
+                SetupAndStartTimer();
+                while (!HasTimerElapsed)
+                {
+                    ret = 0;
+                    if (PingSocket.Available > NetworkConstants.IP_HEADER_LEN)
+                    {
+                        try
+                        {
+                            ret = PingSocket.ReceiveFrom(rcvBuf, ref sender);
+                        }
+                        catch (SocketException se)
+                        {
+                            if (se.SocketErrorCode != SocketError.WouldBlock)
+                            {
+                                // This is not EAGAIN, throw
+                                throw;
+                            }
+                        }
+                    }
+                    if (ret > NetworkConstants.IP_HEADER_LEN)
+                    {
+                        byte firstB = rcvBuf[NetworkConstants.IP_HEADER_LEN];
+                        if (sender == Destination && firstB == (byte)ICMPTypes.EchoReply)
+                        {
+                            ICMPEchoPacket rcvPkt = new ICMPEchoPacket(rcvBuf,
+                                NetworkConstants.IP_HEADER_LEN, ret - NetworkConstants.IP_HEADER_LEN);
+                            if (ICMPEchoPacket.DoFieldsMatch(EchoPacket, rcvPkt))
+                            {
+                                //timeoutTimer.Stop();
+                                ReplyReceived?.Invoke(this, sw.Elapsed.Milliseconds);
+                                //break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(5);
+                    }
+                }
+            }
+            sw.Stop();
+        }
+
+        private void SetupAndStartTimer()
+        {
+            if (timeoutTimer == null)
+            {
+                timeoutTimer = new Timer();
+                timeoutTimer.Elapsed += TimeoutElapsed;
+                timeoutTimer.AutoReset = false;
+            }
+            timeoutTimer.Interval = TimeoutDuration;
+            HasTimerElapsed = false;
+            timeoutTimer.Start();
+        }
+
+        private void TimeoutElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            HasTimerElapsed = true;
+            PacketTimedOut?.Invoke(this, null);
+            //(sender as Timer).Stop();
+        }
+
+        private void PreparePacket(byte[] msg)
+        {
+            EchoPacket.Type = ICMPTypes.EchoRequest;
+            EchoPacket.Code = 0;
+            EchoPacket.Identifier = 1;
+            EchoPacket.SequenceNumber = 44;
+            EchoPacket.CustomData = msg;
+            EchoPacket.PrepareBuffer();
+        }
+
+        private EndPoint GetFirstIP(string address)
+        {
+            var addressList = Dns.GetHostEntry(address).AddressList;
+            return new IPEndPoint(addressList.Where(a => a.AddressFamily == AddressFamily.InterNetwork).First(), 0);
+        }
+
+        private Timer timeoutTimer = null;
+
+    }
+}
