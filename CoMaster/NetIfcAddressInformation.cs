@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Management;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace CoMaster
 {
-    internal struct NetIfcAddressInformation
+    internal class NetIfcAddressInformation
     {
+        public NetworkInterface Handle { get; set; }
         public string Name { get; set; }
         public string Description  { get; set; }
         public bool IsUp  { get; set; }
@@ -19,6 +25,62 @@ namespace CoMaster
         public string GatewayAddress  { get; set; }
         public string DhcpServerAddress  { get; set; }
         public string DnsServerAddress { get; set; }
+
+        public void ApplySettings()
+        {
+            // Currently only IP, Subnet and Gateway settings are monitored
+            string commandStr1;
+            string commandStr2;
+            string execName = "netsh";
+            if (IpAddress == "0" || DhcpServerAddress == "0" || DnsServerAddress == "0" || GatewayAddress == "0")
+            {
+                commandStr1 = $"interface ip set address {Name} dhcp";
+                commandStr2 = $"interface ip set dns {Name} dhcp";
+            }
+            else
+            {
+                commandStr1 = $"interface ip set address {Name} static {IpAddress} {SubnetAddress} {GatewayAddress} 1";
+                commandStr2 = $"interface ip set dns {Name} static {DnsServerAddress}";
+            }
+
+            string cmd = $"/c {execName} {commandStr1} & {execName} {commandStr2}";
+            //Process p = new Process();
+            //ProcessStartInfo psi = new ProcessStartInfo("netsh", commandStr1);
+            //ProcessStartInfo psi2 = new ProcessStartInfo("netsh", commandStr2);
+            //psi.Verb = "runas";
+            //psi2.Verb = "runas";
+            //psi.WindowStyle = ProcessWindowStyle.Hidden;
+            //psi2.WindowStyle = ProcessWindowStyle.Hidden;
+            //p.StartInfo = psi;
+            //p.Start();
+            //p.WaitForExit();
+            //p.StartInfo = psi2;
+            //p.Start();
+            //p.WaitForExit();
+            ProcessStartInfo psi = new ProcessStartInfo("cmd", cmd);
+            psi.Arguments = cmd;
+            psi.Verb = "runas";
+            psi.UseShellExecute = true;
+            Process p = new Process();
+            p.StartInfo = psi;
+            p.Start();
+            Thread.Sleep(2000);
+            p.WaitForExit();
+            //ProcessStartInfo info = new ProcessStartInfo("cmd");
+            //info.RedirectStandardInput = true;
+            //info.Verb = "runas";
+            //info.UseShellExecute = false;
+            //Process p = new Process();
+            //p.StartInfo = info;
+            //p.Start();
+            //using (StreamWriter sw = p.StandardInput)
+            //{
+            //    sw.WriteLine(commandStr1);
+            //    Thread.Sleep(1000);
+            //    sw.WriteLine(commandStr2);
+            //    Thread.Sleep(1000);
+            //}
+        }
     }
 
     internal class NetworkConfigurationReader
@@ -29,15 +91,17 @@ namespace CoMaster
             NetIfcAddressInformation[] ifcs = new NetIfcAddressInformation[NetInterfaces.Length];
             for (int i = 0; i < NetInterfaces.Length; i++)
             {
-                ReadIpProperties(NetInterfaces[i], ref ifcs[i]);
+                ifcs[i] = new NetIfcAddressInformation();
+                ReadIpProperties(NetInterfaces[i], ifcs[i]);
             }
             return ifcs;
         }
 
-        private static void ReadIpProperties(NetworkInterface ifc, ref NetIfcAddressInformation ifcprops)
+        public static void ReadIpProperties(NetworkInterface ifc, NetIfcAddressInformation ifcprops)
         {
             ifcprops.IsUp = ifc.OperationalStatus == OperationalStatus.Up;
             ifcprops.Name = ifc.Name;
+            ifcprops.Handle = ifc;
             ifcprops.Description = ifc.Description;
             var props = ifc.GetIPProperties();
             var phy = ifc.GetPhysicalAddress();

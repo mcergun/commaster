@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CoMaster.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,14 +33,53 @@ namespace CoMaster.ViewModels
                 NotifyPropertyChanged();
             }
         }
+        public int SelectedIndex
+        {
+            get
+            {
+                return selectedIndex;
+            }
+            set
+            {
+                selectedIndex = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public RelayCommand<object> ApplyConfigurationCommand
+        {
+            get
+            {
+                if (apply == null)
+                {
+                    apply = new RelayCommand<object>(ApplyConfiguration);
+                }
+                return apply;
+            }
+        }
 
         public InterfaceDisplayViewModel()
         {
+            UpdateInterfaces();
+        }
+
+        private void ApplyConfiguration(object obj)
+        {
+            SelectedInterface.ApplySettings();
+            int oldIdx = SelectedIndex;
+            UpdateInterfaces();
+            SelectedIndex = oldIdx;
+        }
+
+        private void UpdateInterfaces()
+        {
             Interfaces = NetworkConfigurationReader.GetNetworkInformation();
-            SelectedInterface = Interfaces[0];
+            //SelectedInterface = Interfaces[0];
         }
 
         private NetIfcAddressInformation selectedInterface;
+        private int selectedIndex;
         private NetIfcAddressInformation[] interfaces;
+        private RelayCommand<object> apply;
     }
 }

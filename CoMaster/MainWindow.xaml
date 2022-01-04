@@ -29,10 +29,11 @@
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0" Text="You may find a list of available interfaces on the system:" Style="{StaticResource DescriptionText}"/>
                     <DataGrid Grid.Row="1" x:Name="listInterfaces" GridLinesVisibility="None" AlternationCount="0" CanUserDeleteRows="False" CanUserAddRows="False" CanUserResizeRows="False" IsReadOnly="True"
-                              Margin="7, 6" Padding="0" SelectionMode="Single" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Interfaces}" SelectedItem="{Binding SelectedInterface}"/>
+                              Margin="7, 6" Padding="0" SelectionMode="Single" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Interfaces}" SelectedItem="{Binding SelectedInterface}" SelectedIndex="{Binding SelectedIndex}"/>
                     <GroupBox Grid.Row="2" Header="Interface Information">
                         <Grid>
                             <Grid.RowDefinitions>
+                                <RowDefinition/>
                                 <RowDefinition/>
                                 <RowDefinition/>
                                 <RowDefinition/>
@@ -44,18 +45,19 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Label Grid.Row="0" Grid.Column="0" Content="IP Address: " Style="{StaticResource InputLabel}"/>
+                            <Label Grid.Row="0" Grid.Column="0" Content="IP Address:" Style="{StaticResource InputLabel}"/>
                             <Label Grid.Row="1" Grid.Column="0" Content="MAC Address: " Style="{StaticResource InputLabel}"/>
                             <Label Grid.Row="2" Grid.Column="0" Content="Subnet Mask: " Style="{StaticResource InputLabel}"/>
                             <Label Grid.Row="3" Grid.Column="0" Content="Default Gateway: " Style="{StaticResource InputLabel}"/>
-                            <Label Grid.Row="4" Grid.Column="0" Content="DHCP Server: " Style="{StaticResource InputLabel}"/>
-                            <Label Grid.Row="5" Grid.Column="0" Content="DNS Address: " Style="{StaticResource InputLabel}"/>
-                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedInterface.IpAddress}" Style="{StaticResource MonoTextBox}" IsReadOnly="True"/>
-                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedInterface.MacAddress}" Style="{StaticResource MonoTextBox}" IsReadOnly="True"/>
-                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedInterface.SubnetAddress}" Style="{StaticResource MonoTextBox}" IsReadOnly="True"/>
-                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SelectedInterface.GatewayAddress}" Style="{StaticResource MonoTextBox}" IsReadOnly="True"/>
-                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding SelectedInterface.DhcpServerAddress}" Style="{StaticResource MonoTextBox}" IsReadOnly="True"/>
-                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding SelectedInterface.DnsServerAddress}" Style="{StaticResource MonoTextBox}" IsReadOnly="True"/>
+                            <Label Grid.Row="4" Grid.Column="0" Content="DHCP Server:" Style="{StaticResource InputLabel}"/>
+                            <Label Grid.Row="5" Grid.Column="0" Content="DNS Address:" Style="{StaticResource InputLabel}"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedInterface.IpAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedInterface.MacAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="True"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedInterface.SubnetAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}"/>
+                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SelectedInterface.GatewayAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}"/>
+                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding SelectedInterface.DhcpServerAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}"/>
+                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding SelectedInterface.DnsServerAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}"/>
+                            <Button Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Content="Apply Configuration" Command="{Binding ApplyConfigurationCommand}"/>
                         </Grid>
                     </GroupBox>
                 </Grid>
