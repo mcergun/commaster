@@ -9,7 +9,7 @@ namespace CoMaster.ViewModels
 {
     internal class InterfaceDisplayViewModel : Notifier
     {
-        public NetIfcAddressInformation SelectedInterface
+        public NetInterfaceInformation SelectedInterface
         {
             get
             {
@@ -21,7 +21,7 @@ namespace CoMaster.ViewModels
                 NotifyPropertyChanged();
             }
         }
-        public NetIfcAddressInformation[] Interfaces
+        public NetInterfaceInformation[] Interfaces
         {
             get
             {
@@ -65,7 +65,7 @@ namespace CoMaster.ViewModels
 
         private void ApplyConfiguration(object obj)
         {
-            SelectedInterface.ApplySettings();
+            NetworkManager.ApplySettings(SelectedInterface);
             int oldIdx = SelectedIndex;
             UpdateInterfaces();
             SelectedIndex = oldIdx;
@@ -73,13 +73,13 @@ namespace CoMaster.ViewModels
 
         private void UpdateInterfaces()
         {
-            Interfaces = NetworkConfigurationReader.GetNetworkInformation();
+            Interfaces = NetworkManager.GetNetworkInformation();
             //SelectedInterface = Interfaces[0];
         }
 
-        private NetIfcAddressInformation selectedInterface;
+        private NetInterfaceInformation selectedInterface;
         private int selectedIndex;
-        private NetIfcAddressInformation[] interfaces;
+        private NetInterfaceInformation[] interfaces;
         private RelayCommand<object> apply;
     }
 }

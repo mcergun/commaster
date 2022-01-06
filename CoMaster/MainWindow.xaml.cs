@@ -30,7 +30,7 @@ namespace CoMaster
         public MainWindow()
         {
             InitializeComponent();
-            NetIfcAddressInformation[] ifcs = NetworkConfigurationReader.GetNetworkInformation();
+            NetInterfaceInformation[] ifcs = NetworkManager.GetNetworkInformation();
             PacketLog.Instance.OnItemLogged += Instance_OnItemLogged;
 
             NetInterfaces = NetworkInterface.GetAllNetworkInterfaces();
