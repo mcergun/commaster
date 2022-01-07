@@ -11,106 +11,13 @@
     <Window.Resources>
         <cvs:ProtocolConverter x:Key="ProtocolConverter"/>
     </Window.Resources>
-    <Grid Style="{StaticResource WinGrid}">
+    <Grid Style="{StaticResource MainGrid}">
         <TabControl>
             <TabItem Header="Interfaces">
-                <TabItem.DataContext>
-                    <vms:InterfaceDisplayViewModel/>
-                </TabItem.DataContext>
-                <Grid Style="{StaticResource TabbedGrid}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Text="You may find a list of available interfaces on the system:" Style="{StaticResource DescriptionText}"/>
-                    <DataGrid Grid.Row="1" x:Name="listInterfaces" GridLinesVisibility="None" AlternationCount="2" CanUserDeleteRows="False" CanUserAddRows="False" CanUserResizeRows="False" IsReadOnly="True"
-                              Margin="7, 6" Padding="0" SelectionMode="Single" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding Interfaces}" SelectedItem="{Binding SelectedInterface}" SelectedIndex="{Binding SelectedIndex}" AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
-                            <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
-                            <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
-                            <DataGridCheckBoxColumn Header="Enabled" Binding="{Binding IsUp}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <GroupBox Grid.Row="2" Header="Interface Information">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Label Grid.Row="0" Grid.Column="0" Content="MAC Address: " Style="{StaticResource InputLabel}"/>
-                            <Label Grid.Row="1" Grid.Column="0" Content="IP Address:" Style="{StaticResource InputLabel}"/>
-                            <Label Grid.Row="2" Grid.Column="0" Content="Subnet Mask: " Style="{StaticResource InputLabel}"/>
-                            <Label Grid.Row="3" Grid.Column="0" Content="Default Gateway: " Style="{StaticResource InputLabel}"/>
-                            <Label Grid.Row="4" Grid.Column="0" Content="DHCP Server:" Style="{StaticResource InputLabel}"/>
-                            <Label Grid.Row="5" Grid.Column="0" Content="DNS Address:" Style="{StaticResource InputLabel}"/>
-                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedInterface.MacAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="True"/>
-                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedInterface.IpAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="{Binding SelectedInterface.IsDhcpEnabled}"/>
-                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedInterface.SubnetAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="{Binding SelectedInterface.IsDhcpEnabled}"/>
-                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SelectedInterface.GatewayAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="{Binding SelectedInterface.IsDhcpEnabled}"/>
-                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding SelectedInterface.DhcpServerAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="{Binding SelectedInterface.IsDhcpEnabled}"/>
-                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding SelectedInterface.DnsServerAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="{Binding SelectedInterface.IsDhcpEnabled}"/>
-                            <CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding SelectedInterface.IsDhcpEnabled}" Content="Enable DHCP" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="7, 6"/>
-                            <Button Grid.Row="6" Grid.Column="1" Content="Apply Configuration" Command="{Binding ApplyConfigurationCommand}"/>
-                        </Grid>
-                    </GroupBox>
-                </Grid>
+                <Frame Source="Pages/InterfacesPage.xaml"/>
             </TabItem>
             <TabItem Header="Send Packets">
-                <TabItem.DataContext>
-                    <vms:PacketSenderViewModel/>
-                </TabItem.DataContext>
-                <Grid Style="{StaticResource TabbedGrid}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="Source Port:"/>
-                        <Label Grid.Row="0" Grid.Column="1" Content="Destination Host:"/>
-                        <Label Grid.Row="0" Grid.Column="2" Content="Destination Port:"/>
-                        <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding SourcePort}" Style="{StaticResource MonoTextBox}"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Address}" Style="{StaticResource MonoTextBox}"/>
-                        <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding Port}" Style="{StaticResource MonoTextBox}"/>
-                    </Grid>
-                    <Label Grid.Row="2" Grid.Column="0" Content="Protocol:"/>
-                    <ComboBox Grid.Row="3" Grid.Column="0" SelectedItem="{Binding Protocol, Converter={StaticResource ProtocolConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              ItemsSource="{Binding Protocols}"/>
-                    <Button Grid.Row="3" Grid.Column="1" Content="{Binding ConnectString}" Command="{Binding ConnectCommand}"/>
-                    <TextBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Message}" Style="{StaticResource MonoTextBox}" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" VerticalAlignment="Stretch"/>
-                    <Button Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Content="Send" Command="{Binding SendPacketCommand}"/>
-                </Grid>
+                <Frame Source="Pages/PacketSenderPage.xaml"/>
             </TabItem>
             <TabItem Header="Log">
                 <Grid>

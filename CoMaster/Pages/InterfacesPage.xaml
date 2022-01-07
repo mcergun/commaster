@@ -1,0 +1,64 @@
+﻿<Page x:Class="CoMaster.Pages.InterfacesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CoMaster.Pages"
+      xmlns:vms="clr-namespace:CoMaster.ViewModels"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="550"
+      Title="InterfacesPage">
+
+    <Grid>
+        <Grid.DataContext>
+            <vms:InterfaceDisplayViewModel/>
+        </Grid.DataContext>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Content="List of available interfaces on the system:"/>
+        <DataGrid Grid.Row="1" IsReadOnly="True" AutoGenerateColumns="False" SelectionMode="Single" ItemsSource="{Binding Interfaces}"
+                  SelectedItem="{Binding SelectedInterface}" SelectedIndex="{Binding SelectedIndex}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding Type}"/>
+                <DataGridCheckBoxColumn Header="Enabled?" Binding="{Binding IsUp}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <GroupBox Grid.Row="2" Header="IP Properties">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Content="MAC Address: " Style="{StaticResource InputLabel}"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="IP Address:" Style="{StaticResource InputLabel}"/>
+                <Label Grid.Row="2" Grid.Column="0" Content="Subnet Mask: " Style="{StaticResource InputLabel}"/>
+                <Label Grid.Row="3" Grid.Column="0" Content="Default Gateway: " Style="{StaticResource InputLabel}"/>
+                <Label Grid.Row="4" Grid.Column="0" Content="DHCP Server:" Style="{StaticResource InputLabel}"/>
+                <Label Grid.Row="5" Grid.Column="0" Content="DNS Address:" Style="{StaticResource InputLabel}"/>
+
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedInterface.MacAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="True"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedInterface.IpAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="{Binding SelectedInterface.IsDhcpEnabled}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedInterface.SubnetAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="{Binding SelectedInterface.IsDhcpEnabled}"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SelectedInterface.GatewayAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="{Binding SelectedInterface.IsDhcpEnabled}"/>
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding SelectedInterface.DhcpServerAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="{Binding SelectedInterface.IsDhcpEnabled}"/>
+                <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding SelectedInterface.DnsServerAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MonoTextBox}" IsReadOnly="{Binding SelectedInterface.IsDhcpEnabled}"/>
+                <CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding SelectedInterface.IsDhcpEnabled}" Content="Enable DHCP"/>
+                <Button Grid.Row="6" Grid.Column="1" Content="Apply Configuration" Command="{Binding ApplyConfigurationCommand}"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Page>

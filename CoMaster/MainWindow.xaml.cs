@@ -24,8 +24,6 @@ namespace CoMaster
     /// </summary>
     public partial class MainWindow : Window
     {
-        NetworkInterface[] NetInterfaces;
-        IPInterfaceProperties[] IfcProperties;
         PacketManager pm = new PacketManager();
         public MainWindow()
         {
@@ -33,17 +31,6 @@ namespace CoMaster
             NetInterfaceInformation[] ifcs = NetworkManager.GetNetworkInformation();
             PacketLog.Instance.OnItemLogged += Instance_OnItemLogged;
 
-            NetInterfaces = NetworkInterface.GetAllNetworkInterfaces();
-            IfcProperties = new IPInterfaceProperties[NetInterfaces.Length];
-            int i = 0;
-            foreach (var ifc in NetInterfaces)
-            {
-                Debug.WriteLine("[{0}] {1}: {2}, {3}",
-                    ifc.Name, ifc.Description, ifc.Speed, ifc.OperationalStatus);
-                IfcProperties[i++] = ifc.GetIPProperties();
-            }
-
-            listInterfaces.AutoGeneratingColumn += ListInterfaces_AutoGeneratingColumn;
             TelnetMaster tm = new TelnetMaster();
             tm.Call();
         }
@@ -55,33 +42,6 @@ namespace CoMaster
                 liLog.ItemsSource = null;
                 liLog.ItemsSource = PacketLog.Instance.List;
             });
-        }
-
-        private void ListInterfaces_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-        {
-            if (e.PropertyName == "Id")
-                e.Cancel = true;
-
-            switch (e.PropertyName)
-            {
-                case "NetworkInterfaceType":
-                    e.Column.Header = "Interface Type";
-                    break;
-                case "IsUp":
-                    e.Column.Header = "State";
-                    break;
-                case "Name":
-                case "Description":
-                    e.Column.Header = e.PropertyName;
-                    break;
-                case "Id":
-                case "IsReceiveOnly":
-                case "SupportsMulticast":
-                case "Speed":
-                default:
-                    e.Cancel = true;
-                    break;
-            }
         }
     }
 }
