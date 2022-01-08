@@ -120,21 +120,23 @@ namespace CoMaster
         }
 
         public void Send(int srcPort, string hostAddress, int dstPort, string message)
+            => Send(srcPort, hostAddress, dstPort, Encoding.ASCII.GetBytes(message));
+
+        public void Send(int srcPort, string hostAddress, int dstPort, byte[] message)
         {
             remoteHost = NetAddressHelper.ParseAddress(hostAddress, dstPort) as IPEndPoint;
             RemoteAddress = hostAddress;
             RemotePort = dstPort;
             LocalPort = srcPort;
-            if (sourceChanged)
-            {
-                Setup();
-            }
-            Send(Encoding.ASCII.GetBytes(message));
-            destinationChanged = false;
+            Send(message);
         }
 
         public void Send(byte[] messageBytes)
         {
+            if (sourceChanged)
+            {
+                Setup();
+            }
             if (protocol == ProtocolType.Tcp)
             {
                 if (!tcpClient.Connected) throw new InvalidOperationException("Tcp Client is not connected!");
@@ -153,6 +155,7 @@ namespace CoMaster
                 Type = protocol
             };
             PacketLog.Instance.Add(pli);
+            destinationChanged = false;
         }
 
         protected virtual void Dispose(bool disposing)

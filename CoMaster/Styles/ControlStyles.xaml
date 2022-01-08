@@ -7,6 +7,10 @@
     <Style TargetType="Grid" x:Key="MainGrid">
         <Setter Property="Margin" Value="4"/>
     </Style>
+    <Style TargetType="GroupBox">
+        <Setter Property="Margin" Value="4"/>
+        <Setter Property="Padding" Value="2"/>
+    </Style>
     <Style TargetType="TextBox">
         <Setter Property="Margin" Value="4"/>
         <Setter Property="Padding" Value="4"/>
@@ -26,10 +30,6 @@
     </Style>
     <Style TargetType="Label" x:Key="InputLabel">
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-    </Style>
-    <Style TargetType="GroupBox">
-        <Setter Property="Margin" Value="4"/>
-        <Setter Property="Padding" Value="2"/>
     </Style>
     <Style TargetType="Button">
         <Setter Property="Margin" Value="4"/>

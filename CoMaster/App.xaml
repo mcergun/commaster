@@ -6,7 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ControlStyles.xaml"/>
+                <ResourceDictionary Source="Styles/ControlStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="local:MainWindow" BasedOn="{StaticResource {x:Type Window}}"/>
         </ResourceDictionary>
