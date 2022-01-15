@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace CoMaster.ViewModels
 {
@@ -65,15 +66,29 @@ namespace CoMaster.ViewModels
 
         private void ApplyConfiguration(object obj)
         {
-            NetworkManager.ApplySettings(SelectedInterface);
-            int oldIdx = SelectedIndex;
-            UpdateInterfaces();
-            SelectedIndex = oldIdx;
+            try
+            {
+                NetworkManager.ApplySettings(SelectedInterface);
+                int oldIdx = SelectedIndex;
+                UpdateInterfaces();
+                SelectedIndex = oldIdx;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void UpdateInterfaces()
         {
-            Interfaces = NetworkManager.GetNetworkInformation();
+            try
+            {
+                Interfaces = NetworkManager.GetNetworkInformation();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             //SelectedInterface = Interfaces[0];
         }
 

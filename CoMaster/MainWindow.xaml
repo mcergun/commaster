@@ -19,6 +19,9 @@
             <TabItem Header="Send Packets">
                 <Frame Source="Pages/PacketSenderPage.xaml"/>
             </TabItem>
+            <TabItem Header="Send Ping">
+                <Frame Source="Pages/PingPage.xaml"/>
+            </TabItem>
             <TabItem Header="Log">
                 <Grid>
                     <DataGrid Name="liLog" GridLinesVisibility="Horizontal" IsReadOnly="True" SelectionMode="Single" ></DataGrid>

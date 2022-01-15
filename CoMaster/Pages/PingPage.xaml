@@ -1,0 +1,47 @@
+﻿<Page x:Class="CoMaster.Pages.PingPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CoMaster.Pages"
+      xmlns:vms="clr-namespace:CoMaster.ViewModels"
+      xmlns:b="clr-namespace:CoMaster.Behaviors"
+      xmlns:oxy="http://oxyplot.org/wpf"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="600"
+      Title="PingPage">
+
+    <Grid>
+        <Grid.DataContext>
+            <vms:PingViewModel/>
+        </Grid.DataContext>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" Grid.Column="0" Content="Destination Address:"/>
+        <Label Grid.Row="0" Grid.Column="1" Content="Ping Count:"/>
+        <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding Destination, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Count, Mode=TwoWay, StringFormat=\{0:D\}, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"/>
+        <Button Grid.Row="1" Grid.Column="2" Content="Send Ping" Command="{Binding SendPingCommand}" CommandParameter="{Binding Count}"/>
+        <oxy:PlotView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Model="{Binding Plot}"/>
+        <!--<Viewbox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+            <Polyline Points="{Binding Points}" Stroke="Black" StrokeThickness="5" Stretch="UniformToFill" Margin="4" RenderTransformOrigin="0.5,0.5">
+                <Polyline.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleY="-1"/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Polyline.RenderTransform>
+            </Polyline>
+        </Viewbox>-->
+    </Grid>
+</Page>

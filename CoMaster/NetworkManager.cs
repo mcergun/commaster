@@ -81,8 +81,8 @@ namespace CoMaster
             Process p = new Process();
             p.StartInfo = psi;
             p.Start();
-            Thread.Sleep(2000);
             p.WaitForExit();
+            Thread.Sleep(2000);
         }
     }
 }
